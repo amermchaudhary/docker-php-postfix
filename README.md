@@ -1,6 +1,9 @@
 # docker-php-fpm-nginx-postfix
 ## Introduction
 This is a repository that can be used to run php, php-fpm, nginx, postfix on docker / kubernetes. This can be used as a dev environment for developer as well as a base docker image to build other images on top of.
+##Versioning
+* 1.0.x for php7
+* 1.1.8 for php8
 ## How to use this
 ### Changes required to make postfix work
 * Make changes to the postfix/sasl_passwd file and update it with your own smtp details
