@@ -1,4 +1,4 @@
 php-fpm -F &
-postmap hash:/etc/postfix/sasl_passwd &
+postmap lmdb:/etc/postfix/sasl_passwd &
 postfix start-fg &
 nginx -g 'daemon off;'

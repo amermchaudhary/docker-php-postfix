@@ -1,14 +1,15 @@
-FROM alpine:3.10
+FROM alpine:3.13
 
-COPY php.ini /etc/php7/conf.d/nodesol.ini
+COPY php.ini /etc/php8/conf.d/nodesol.ini
 COPY entrypoint /usr/bin/entrypoint
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/http.d/default.conf
 
 RUN apk update \
 	&& apk upgrade \
-	&& apk add nginx postfix curl cyrus-sasl cyrus-sasl-plain cyrus-sasl-login \
-	&& apk add php7 php7-cli php7-fpm php7-bcmath php7-phar php7-tokenizer php7-curl php7-json php7-openssl php7-zip php7-pdo php7-mysqli php7-pdo_mysql php7-mysqlnd php7-dom php7-mbstring php7-session php7-fileinfo php7-gd php7-mcrypt php7-calendar \
-	&& ln -s /usr/sbin/php-fpm7 /usr/bin/php-fpm \
+	&& apk add nginx postfix curl cyrus-sasl cyrus-sasl-login \
+	&& apk add php8 php8-cli php8-fpm php8-bcmath php8-phar php8-tokenizer php8-curl php8-json php8-openssl php8-zip php8-pdo php8-mysqli php8-pdo_mysql php8-mysqlnd php8-dom php8-mbstring php8-session php8-fileinfo php8-gd php8-calendar \
+	&& ln -s /usr/bin/php8 /usr/bin/php \
+	&& ln -s /usr/sbin/php-fpm8 /usr/bin/php-fpm \
 	&& nginx -v && php -v && php-fpm -v \
 	&& mkdir -p /run/nginx \
 	&& mkdir -p /home/nodesol/public \
@@ -25,11 +26,11 @@ RUN apk update \
 COPY postfix/main.cf /etc/postfix/main.cf
 COPY postfix/sasl_passwd /etc/postfix/sasl_passwd
 
-RUN postmap hash:/etc/postfix/sasl_passwd \
+RUN postmap lmdb:/etc/postfix/sasl_passwd \
 	&& touch /etc/postfix/virtual \
 	&& postmap /etc/postfix/virtual \
 	&& touch /etc/postfix/aliases \
-	&& postmap hash:/etc/postfix/aliases \
+	&& postmap lmdb:/etc/postfix/aliases \
 	&& chown root:postdrop /usr/sbin/postdrop \
 	&& chmod 2755 /usr/sbin/postdrop
 
